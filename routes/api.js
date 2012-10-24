@@ -8,6 +8,34 @@ var HttpStatus = {
 	ServerError: 500
 };
 
+var ladder = {
+	itemId: 1,
+	title: "Ladder",
+	description: "It's a ladder.",
+	category: "Home",
+	tags: [
+		"red",
+		"long"
+	]
+};
+
+var wheelbarrow = {
+	itemId: 2,
+	title: "Wheelbarrow",
+	description: "Two handles.",
+	category: "Home",
+	tags: [
+		"rusty"
+	]
+};
+
+var drill = {
+	itemId: 3,
+	title: "Drill",
+	description: "Hammer action.",
+	category: "DIY"
+};
+
 function _sendJsonResponse(status, res, response) {
 	res.contentType("application/json");
 	res.send(status, response);
@@ -33,20 +61,19 @@ function _sendNotFoundError(res, message) {
 
 exports.app = function(app) {
 	app.get("/api/ping", function(req, res) {
-		res.contentType("application/json");
-		res.send(200, {
+		_sendJsonResponse(HttpStatus.OK, res, {
 			ping: "pong"
 		});
 	});
 
-	app.post("/api/item", function(req, res) {	
+	app.post("/api/items", function(req, res) {	
 		// Title and description.
 		var title = req.body.title;
 		var description = req.body.description;
 
 		// Category and tags.
 		var category = req.body.category;
-		var tags = req.body.tags;
+		var tags = req.body.tag;
 
 		if (!title) {
 			_sendApiError(res, "Title is required.");
@@ -66,17 +93,26 @@ exports.app = function(app) {
 		// Feedback input parameters.
 		var response = {
 			itemId: Math.floor(Math.random() * 100000) + 1,
-			title: title
+			title: title,
+			description: description,
+			category: category,
+			tags: tags
 		};
 
 		res.send(HttpStatus.OK, response);
 	});
 
-	app.get("/api/item", function(req, res) {	
-		_sendApiError(res, "ItemId is required.");
+	app.get("/api/items", function(req, res) {
+		var response = [
+			ladder,
+			wheelbarrow,
+			drill
+		];
+
+		_sendJsonResponse(HttpStatus.OK, res, response);
 	});
 
-	app.get("/api/item/:itemId", function(req, res) {	
+	app.get("/api/items/:itemId", function(req, res) {	
 		var itemId = parseInt(req.params.itemId, 10);
 		var message;
 
@@ -88,48 +124,21 @@ exports.app = function(app) {
 			return;
 		}
 
-		var title;
-		var description;
-		var category;
-		var tags;
+		var response;
 
 		switch (itemId) {
 			case 1:
-				title = "Ladder";
-				description = "It's a ladder.";
-				category = "Home";
-				tags = [
-					"red",
-					"long"
-				];
-
+				response = ladder;
 				break;
 
 			case 2:
-				title = "Wheelbarrow";
-				description = "Two handles.";
-				category = "Home";
-				tags = [
-					"rusty"
-				];
-
+				response = wheelbarrow;
 				break;
 
 			default:
-				title = "Drill";
-				description = "Hammer action.";
-				category = "DIY";
-
+				response = drill;
 				break;
 		}
-
-		var response = {
-			itemId: itemId,
-			title: title,
-			description: description,
-			category: category,
-			tags: tags
-		};
 
 		_sendJsonResponse(HttpStatus.OK, res, response);
 	});
