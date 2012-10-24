@@ -8,13 +8,18 @@ var HttpStatus = {
 	ServerError: 500
 };
 
+function _sendJsonResponse(res, status, response) {
+	res.contentType("application/json");
+	res.send(status, response);
+}
+
 function _sendApiError(res, message) {
 	var error = {
 		name: "ApiError",
 		message: message
 	};
 
-	res.send(HttpStatus.BadRequest, error);
+	_sendJsonResponse(res, HttpStatus.BadRequest, error);
 }
 
 function _sendNotFoundError(res, message) {
@@ -23,7 +28,7 @@ function _sendNotFoundError(res, message) {
 		message: message
 	};
 
-	res.send(HttpStatus.NotFound, error);
+	_sendJsonResponse(res, HttpStatus.NotFound, error);
 }
 
 exports.app = function(app) {
@@ -35,8 +40,6 @@ exports.app = function(app) {
 		// Category and tags.
 		var category = req.body.category;
 		var tags = req.body.tags;
-
-		res.contentType("application/json");
 
 		if (!title) {
 			_sendApiError(res, "Title is required.");
@@ -122,6 +125,6 @@ exports.app = function(app) {
 			tags: tags
 		};
 
-		res.send(HttpStatus.OK, response);
+		_sendJsonResponse(res, HttpStatus.OK, response);
 	});
 };
