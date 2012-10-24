@@ -34,7 +34,7 @@ function _sendNotFoundError(res, message) {
 exports.app = function(app) {
 	app.get("/api/ping", function(req, res) {
 		res.contentType("application/json");
-		res.send(404, {
+		res.send(200, {
 			ping: "pong"
 		});
 	});
