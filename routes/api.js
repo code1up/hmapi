@@ -8,7 +8,7 @@ var HttpStatus = {
 	ServerError: 500
 };
 
-function _sendJsonResponse(res, status, response) {
+function _sendJsonResponse(status, res, response) {
 	res.contentType("application/json");
 	res.send(status, response);
 }
@@ -19,7 +19,7 @@ function _sendApiError(res, message) {
 		message: message
 	};
 
-	_sendJsonResponse(res, HttpStatus.BadRequest, error);
+	_sendJsonResponse(HttpStatus.BadRequest, res, error);
 }
 
 function _sendNotFoundError(res, message) {
@@ -28,10 +28,17 @@ function _sendNotFoundError(res, message) {
 		message: message
 	};
 
-	_sendJsonResponse(res, HttpStatus.NotFound, error);
+	_sendJsonResponse(HttpStatus.NotFound, res, error);
 }
 
 exports.app = function(app) {
+	app.get("/api/ping", function(req, res) {
+		res.contentType("application/json");
+		res.send(404, {
+			ping: "pong"
+		});
+	});
+
 	app.post("/api/item", function(req, res) {	
 		// Title and description.
 		var title = req.body.title;
@@ -124,6 +131,6 @@ exports.app = function(app) {
 			tags: tags
 		};
 
-		_sendJsonResponse(res, HttpStatus.OK, response);
+		_sendJsonResponse(HttpStatus.OK, res, response);
 	});
 };
