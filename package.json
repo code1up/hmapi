@@ -1,7 +1,7 @@
 {
   "name": "hmapi",
   "version": "0.0.0",
-  "description": "ERROR: No README.md file found!",
+  "description": "hmapi",
   "main": "server.js",
   "dependencies": {
     "express": "~3.0.0"

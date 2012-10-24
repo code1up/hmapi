@@ -62,7 +62,6 @@ exports.app = function(app) {
 			title: title
 		};
 
-		console.log(response);
 		res.send(HttpStatus.OK, response);
 	});
 
